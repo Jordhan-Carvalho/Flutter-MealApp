@@ -5,8 +5,9 @@ import '../screens/meal_detail_screen.dart';
 
 class MealItem extends StatelessWidget {
   final Meal meal;
+  final Function removeItem;
 
-  const MealItem(this.meal);
+  const MealItem({@required this.meal, @required this.removeItem});
 
   //getter to get the enum text
   String get complexityText {
@@ -42,10 +43,18 @@ class MealItem extends StatelessWidget {
   }
 
   void selectMeal(BuildContext ctx) {
-    Navigator.of(ctx).pushNamed(
+    // the result of the promise comes back with the argument passed on pop (meal detail screen)
+    // the promise (then) only resolves whe the page is poped
+    Navigator.of(ctx)
+        .pushNamed(
       MealDetailScreen.routeName,
       arguments: meal,
-    );
+    )
+        .then((res) {
+      if (res != null) {
+        removeItem(res);
+      }
+    });
   }
 
   @override
