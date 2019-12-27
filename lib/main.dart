@@ -17,6 +17,7 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   List<Meal> _availableMeals = DUMMY_MEALS;
+  List<Meal> _favoritedMeals = [];
 
   Map<String, bool> _filters = {
     'gluten': false,
@@ -46,6 +47,25 @@ class _MyAppState extends State<MyApp> {
     });
   }
 
+  void _toggleFavorite(String mealId) {
+    final existingIndex =
+        _favoritedMeals.indexWhere((meal) => meal.id == mealId);
+    if (existingIndex >= 0) {
+      setState(() {
+        _favoritedMeals.removeAt(existingIndex);
+      });
+    } else {
+      setState(() {
+        _favoritedMeals
+            .add(DUMMY_MEALS.firstWhere((meal) => meal.id == mealId));
+      });
+    }
+  }
+
+  bool _isFavorite(String mealId) {
+    return _favoritedMeals.any((meal) => meal.id == mealId);
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -64,13 +84,14 @@ class _MyAppState extends State<MyApp> {
               fontWeight: FontWeight.bold,
             )),
       ),
-      home: TabsNav(),
+      home: TabsNav(_favoritedMeals),
       // home is default '/'
       routes: {
         FilterScreen.routeName: (ctx) => FilterScreen(_filters, _setFilters),
         CategoryMealsScreen.routeName: (ctx) =>
             CategoryMealsScreen(_availableMeals),
-        MealDetailScreen.routeName: (ctx) => MealDetailScreen(),
+        MealDetailScreen.routeName: (ctx) =>
+            MealDetailScreen(_toggleFavorite, _isFavorite),
       },
       // the route to load if you go to an non-registered route... Used when the app generates dynamic routes on its lifecycle
       // onGenerateRoute: (settings) {

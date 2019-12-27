@@ -7,7 +7,7 @@ class MealItem extends StatelessWidget {
   final Meal meal;
   final Function removeItem;
 
-  const MealItem({@required this.meal, @required this.removeItem});
+  const MealItem({@required this.meal, this.removeItem});
 
   //getter to get the enum text
   String get complexityText {
@@ -52,7 +52,7 @@ class MealItem extends StatelessWidget {
     )
         .then((res) {
       if (res != null) {
-        removeItem(res);
+        // removeItem(res);
       }
     });
   }
